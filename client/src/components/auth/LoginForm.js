@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import API from "../../api";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -22,19 +22,27 @@ const LoginForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await API.post("/auth/login", formData);
+  try {
+    const res = await API.post("/auth/login", formData);
 
+    if (res.data?.token) {
       localStorage.setItem("token", res.data.token);
 
-      navigate("/");
-    } catch (err) {
-      setError("Invalid credentials");
+      // Force refresh to reload auth state
+      window.location.href = "/";
+    } else {
+      setError("Login failed");
     }
-  };
+
+  } catch (err) {
+    setError(
+      err.response?.data?.message || "Invalid credentials"
+    );
+  }
+};
 
   return (
     <div style={containerStyle}>
