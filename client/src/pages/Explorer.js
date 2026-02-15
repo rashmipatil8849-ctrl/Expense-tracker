@@ -53,9 +53,9 @@ const Explorer = () => {
   }, []);
 
   // Fetch transactions
-  useEffect(() => {
-    fetchTransactions();
-  }, [page, filters]);
+  
+  
+
 
   const fetchTransactions = async () => {
     const res = await API.get("/transactions", {
@@ -65,6 +65,7 @@ const Explorer = () => {
         limit: 5
       }
     });
+
 
     const newData = res.data.transactions || [];
 
@@ -95,7 +96,9 @@ const Explorer = () => {
 
   setPage(1);   // reset pagination
 };
-
+useEffect(() => {
+  fetchTransactions();
+}, );
 
   return (
     <div style={container}>
