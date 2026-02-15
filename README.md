@@ -144,7 +144,7 @@ PORT=5000
 🧪 Installation & Setup (Local)
 1️⃣ Clone Repository
 
-git clone https://github.com/rashmipatil8849-ctrl/bellcorp-expense-tracker.git
+git clone https://github.com/rashmipatil8849-ctrl/Expense-tracker
 cd bellcorp-expense-tracker
 
 2️⃣ Backend Setup
