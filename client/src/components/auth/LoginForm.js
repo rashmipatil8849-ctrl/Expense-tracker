@@ -1,18 +1,15 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
 import API from "../../api";
 
 const LoginForm = () => {
-  // const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,27 +19,29 @@ const LoginForm = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-  try {
-    const res = await API.post("/auth/login", formData);
+    try {
+      const res = await API.post("/auth/login", formData);
 
-    if (res.data?.token) {
-      localStorage.setItem("token", res.data.token);
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
 
-      // Force refresh to reload auth state
-      window.location.href = "/";
-    } else {
-      setError("Login failed");
+        // Refresh app to reload protected routes
+        window.location.href = "/";
+      } else {
+        setError("Login failed. Token not received.");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Invalid credentials"
+      );
+    } finally {
+      setLoading(false);
     }
-
-  } catch (err) {
-    setError(
-      err.response?.data?.message || "Invalid credentials"
-    );
-  }
-};
+  };
 
   return (
     <div style={containerStyle}>
@@ -71,16 +70,16 @@ const LoginForm = () => {
           style={inputStyle}
         />
 
-        <button type="submit" style={buttonStyle}>
-          Login
+        <button type="submit" style={buttonStyle} disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
         </button>
-        <p style={registerText}>
-  Don’t have an account?{" "}
-  <Link to="/register" style={registerLink}>
-    Register
-  </Link>
-</p>
 
+        <p style={registerText}>
+          Don’t have an account?{" "}
+          <Link to="/register" style={registerLink}>
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );
@@ -124,6 +123,7 @@ const buttonStyle = {
   borderRadius: "8px",
   cursor: "pointer"
 };
+
 const registerText = {
   marginTop: "15px",
   textAlign: "center",

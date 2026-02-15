@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import API from "../../api";
 
 const RegisterForm = () => {
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -32,10 +30,10 @@ const RegisterForm = () => {
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
 
-        // Navigate properly after token is saved
-        navigate("/", { replace: true });
+        // Force full refresh so auth state updates everywhere
+        window.location.href = "/";
       } else {
-        setError("Token not received from server");
+        setError("Registration successful but token missing.");
       }
 
     } catch (err) {
@@ -104,6 +102,7 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
+
 
 /* Styles */
 
